@@ -22,9 +22,8 @@ public class MyAgnes extends AbstractClusterer {
     public static final int COMPLETE = 1;
     public static DistanceFunction distanceFunction = new EuclideanDistance();
     public int numCluster;
-    public ArrayList<Cluster> clusters = new ArrayList<>();
+    public ArrayList<Cluster> clusters = new ArrayList<Cluster>();
     public Instances instances;
-    public int[] resultClustering = new int[instances.numInstances()];
 
     public int linkAge;
 
@@ -61,12 +60,13 @@ public class MyAgnes extends AbstractClusterer {
     @Override
     public void buildClusterer(Instances data) throws Exception {
         instances = data;
+        distanceFunction.setInstances(instances);
         int nInstance = instances.numInstances();
         if (nInstance == 0) {
             return;
         }
         for (int i = 0; i < nInstance; i++) {
-            ArrayList<Instance> arrtemp = new ArrayList<>();
+            ArrayList<Instance> arrtemp = new ArrayList<>();          
             arrtemp.add(instances.get(i));
             Cluster temp = new Cluster(arrtemp);
             clusters.add(temp);
@@ -76,7 +76,7 @@ public class MyAgnes extends AbstractClusterer {
             int c1 = -1;
             int c2 = -1;
             for (int j = 0; j < clusters.size(); j++) {
-                for (int k = j + 1; k < clusters.size(); j++) {
+                for (int k = j + 1; k < clusters.size(); k++) {
                     double dist = getDistanceCluster(clusters.get(j), clusters.get(k));
                     if (max > dist) {
                         max = dist;
@@ -100,17 +100,27 @@ public class MyAgnes extends AbstractClusterer {
 
     @Override
     public int clusterInstance(Instance instance) {
-        double max=Double.MAX_VALUE;
-        int res=-1;
+        double max = Double.MAX_VALUE;
+        int res = -1;
         for (int i = 0; i < clusters.size(); i++) {
             for (int j = 0; j < clusters.get(i).getCluster().size(); j++) {
-                double temp= distanceFunction.distance(instance,clusters.get(i).getCluster().get(j));
-                if(max>temp){
-                    max=temp;
-                    res=i;
+                double temp = distanceFunction.distance(instance, clusters.get(i).getCluster().get(j));
+                if (max > temp) {
+                    max = temp;
+                    res = i;
                 }
             }
         }
         return res;
+    }
+
+    public void printCluster() {
+        for (int i = 0; i < clusters.size(); i++) {
+            System.out.println("cluster  " + i);
+
+            for (int j = 0; j < clusters.get(i).getCluster().size(); j++) {
+                System.out.println(clusters.get(i).getCluster().get(j).toString());
+            }
+        }
     }
 }
