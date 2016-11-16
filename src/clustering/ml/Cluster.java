@@ -26,4 +26,8 @@ public class Cluster{
         public void setCluster(ArrayList<Instance> instance) {
             this.instance = instance;
         }
+        
+        public void merge(Cluster c){
+            this.instance.addAll(c.instance);
+        }
     }
