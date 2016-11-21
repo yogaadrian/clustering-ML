@@ -25,7 +25,7 @@ public class MyKMeans extends AbstractClusterer{
     private Random rg;
     private static DistanceFunction distanceFunction = new EuclideanDistance();
     private Instances instances;
-    private ArrayList<Cluster> centroids = new ArrayList<Cluster>();
+    private Instance[] centroids;
     
     public MyKMeans(int cluster, int iteration){
         this.numCluster = numCluster;
@@ -46,27 +46,44 @@ public class MyKMeans extends AbstractClusterer{
         }
         
         // initialize centroid
-        int instanceLength = instances.size();
+        int instanceLength = instances.get(0).numAttributes();
+        centroids = new Instance[numCluster];
         for(int i = 0; i < numCluster; i++){
             int random = ThreadLocalRandom.current().nextInt(0, instanceLength + 1);
-            centroids.add((Cluster) instances.get(random));
+            centroids[i] = instances.get(random);
         }
         
-        // assign instances to centroid until iteration or convegence
         boolean convergence = false;
-        int iteration = 0;
-        while(!convergence || iteration < numIteration){
-            for(int i = 0; i < instanceLength; i++){
+        int iterationCount = 0;
+        int numInstance = instances.size();
+        while(!convergence || iterationCount < numIteration){
+            // assign each object to the group that has the closest centroid
+            int[] assignment = new int[numInstance];
+            for(int i = 0; i < numInstance; i++){
+                int tmpCluster = 0;
                 double minDistance = Double.MAX_VALUE;
                 for(int j = 0; j < numCluster; j++){
-                    double distance = distanceFunction.distance(instances.get(i), (Instance) centroids.get(j));
-                    
+                    double distance = distanceFunction.distance(instances.get(i), centroids[j]);
+                    if(distance < minDistance){
+                        tmpCluster = j;
+                        minDistance = distance;
+                    }
                 }
+                assignment[i] = tmpCluster;
             }
+            iterationCount++;
             
-            iteration++;
+            // recalculate the position of centroids
+            double[][] sumPosition = new double[numCluster][instanceLength];
+            int[] countPosition = new int[numCluster];
+            for(int i = 0; i < numInstance; i++){
+                Instance in = instances.get(i);
+                for(int j = 0; j < instanceLength; j++){
+                    sumPosition[assignment[i]][j] += in.weight() * in.value(j);
+                }
+                countPosition[assignment[i]]++;
+            }
         }
-        
     }
 
     @Override
