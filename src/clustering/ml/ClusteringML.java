@@ -21,8 +21,12 @@ public class ClusteringML {
         // TODO code application logic here
         Instances instances= LoadData.getData("weather.nominal.arff");
         MyAgnes myagnes= new MyAgnes(2,MyAgnes.COMPLETE);
-        myagnes.buildClusterer(instances);
-        myagnes.printCluster();
+        MyKMeans mykmeans = new MyKMeans(3, 10);
+        
+        mykmeans.buildClusterer(instances);
+        mykmeans.printCluster();
+//        myagnes.buildClusterer(instances);
+//        myagnes.printCluster();
     }
     
 }
