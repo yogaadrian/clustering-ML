@@ -5,8 +5,13 @@
  */
 package clustering.ml;
 
+import function.Evaluator;
 import function.LoadData;
+import weka.clusterers.ClusterEvaluation;
+import weka.clusterers.HierarchicalClusterer;
+import static weka.clusterers.HierarchicalClusterer.TAGS_LINK_TYPE;
 import weka.core.Instances;
+import weka.core.SelectedTag;
 
 /**
  *
@@ -21,12 +26,21 @@ public class ClusteringML {
         // TODO code application logic here
         Instances instances= LoadData.getData("weather.nominal.arff");
         MyAgnes myagnes= new MyAgnes(2,MyAgnes.COMPLETE);
-        MyKMeans mykmeans = new MyKMeans(3, 10);
+        //MyKMeans mykmeans = new MyKMeans(3, 10);
         
-        mykmeans.buildClusterer(instances);
-        mykmeans.printCluster();
-//        myagnes.buildClusterer(instances);
-//        myagnes.printCluster();
+        //mykmeans.buildClusterer(instances);
+        //mykmeans.printCluster();
+        myagnes.buildClusterer(instances);
+        //myagnes.printCluster();
+        
+
+        HierarchicalClusterer hc= new HierarchicalClusterer();
+        hc.setLinkType(new SelectedTag(1, TAGS_LINK_TYPE));
+        hc.buildClusterer(instances);
+        Evaluator.evaluate(hc, instances);
+        System.out.println("-----------------------------");
+        Evaluator.evaluate(myagnes, instances);
+
     }
     
 }
