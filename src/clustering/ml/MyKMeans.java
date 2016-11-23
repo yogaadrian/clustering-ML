@@ -42,9 +42,24 @@ public class MyKMeans extends AbstractClusterer{
             System.out.println("cluster  " + i);
 
             for (int j = 0; j < clusters[i].size(); j++) {
-                System.out.println(clusters[i].get(j).toString());
+                System.out.println("anggota : "+clusters[i].get(j).toString());
             }
         }
+    }
+
+    @Override
+    public int clusterInstance(Instance instance) throws Exception {
+        //return super.clusterInstance(instance); //To change body of generated methods, choose Tools | Templates.
+        double min = Double.MAX_VALUE;
+        int cluster = 0;
+        for(int i = 0; i < numCluster; i++){
+            double dist = distanceFunction.distance(centroids[i], instance);
+            if(dist < min){
+                min = dist;
+                cluster = i;
+            }
+        }
+        return cluster;
     }
     
     @Override
@@ -63,15 +78,16 @@ public class MyKMeans extends AbstractClusterer{
         // initialize centroid
         int instanceLength = instances.get(0).numAttributes();
         centroids = new Instance[numCluster];
+        int numInstance = instances.size();
         Random rand = new Random();
+        
         for(int i = 0; i < numCluster; i++){
-            int random = rand.nextInt(instanceLength);
+            int random = rand.nextInt(numInstance);
             centroids[i] = instances.get(random);
         }
         
         int iterationCount = 0;
         boolean isConvergen = false;
-        int numInstance = instances.size();
         int[] prevAssign = new int[numInstance];
         for(int i = 0; i < numInstance; i++){
             prevAssign[i] = -1;
@@ -85,7 +101,7 @@ public class MyKMeans extends AbstractClusterer{
             isConvergen = true;
             
             for(int i = 0; i < numInstance; i++){
-                int clusterResult = getCluster(instances.get(i));
+                int clusterResult = clusterInstance(instances.get(i));
                 if(prevAssign[i] != clusterResult){
                     isConvergen = false;
                     prevAssign[i] = clusterResult;
@@ -117,21 +133,22 @@ public class MyKMeans extends AbstractClusterer{
 
     @Override
     public int numberOfClusters() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return numCluster;
     }
     
-    public int getCluster(Instance in){
-        double min = Double.MAX_VALUE;
-        int cluster = 0;
-        for(int i = 0; i < numCluster; i++){
-            double dist = distanceFunction.distance(centroids[i], in);
-            if(dist < min){
-                min = dist;
-                cluster = i;
-            }
-        }
-        return cluster;
-    }
+//    public int getCluster(Instance in){
+//        double min = Double.MAX_VALUE;
+//        int cluster = 0;
+//        for(int i = 0; i < numCluster; i++){
+//            double dist = distanceFunction.distance(centroids[i], in);
+//            if(dist < min){
+//                min = dist;
+//                cluster = i;
+//            }
+//        }
+//        return cluster;
+//    }
     
     public Instance moveCentroid(Instances members){
         double[] vals = new double[members.numAttributes()];
