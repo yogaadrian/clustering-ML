@@ -26,7 +26,7 @@ public class ClusteringML {
         // TODO code application logic here
         Instances instances= LoadData.getData("weather.nominal.arff");
         MyAgnes myagnes= new MyAgnes(2,MyAgnes.COMPLETE);
-        MyKMeans mykmeans = new MyKMeans(2, 5);
+        MyKMeans mykmeans = new MyKMeans(2, 10);
         
         mykmeans.buildClusterer(instances);
 //        mykmeans.printCluster();
@@ -39,7 +39,7 @@ public class ClusteringML {
         hc.buildClusterer(instances);
         Evaluator.evaluate(hc, instances);
         System.out.println("-----------------------------");
-        Evaluator.evaluate(myagnes, instances);
+        Evaluator.evaluate(mykmeans, instances);
 
     }
     

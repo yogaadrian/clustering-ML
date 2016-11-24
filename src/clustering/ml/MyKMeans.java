@@ -49,7 +49,6 @@ public class MyKMeans extends AbstractClusterer{
 
     @Override
     public int clusterInstance(Instance instance) throws Exception {
-        //return super.clusterInstance(instance); //To change body of generated methods, choose Tools | Templates.
         double min = Double.MAX_VALUE;
         int cluster = 0;
         for(int i = 0; i < numCluster; i++){
@@ -79,7 +78,7 @@ public class MyKMeans extends AbstractClusterer{
         int instanceLength = instances.get(0).numAttributes();
         centroids = new Instance[numCluster];
         int numInstance = instances.size();
-        Random rand = new Random();
+        Random rand = new Random(10);
         
         for(int i = 0; i < numCluster; i++){
             int random = rand.nextInt(numInstance);
@@ -133,22 +132,9 @@ public class MyKMeans extends AbstractClusterer{
 
     @Override
     public int numberOfClusters() throws Exception {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return numCluster;
     }
     
-//    public int getCluster(Instance in){
-//        double min = Double.MAX_VALUE;
-//        int cluster = 0;
-//        for(int i = 0; i < numCluster; i++){
-//            double dist = distanceFunction.distance(centroids[i], in);
-//            if(dist < min){
-//                min = dist;
-//                cluster = i;
-//            }
-//        }
-//        return cluster;
-//    }
     
     public Instance moveCentroid(Instances members){
         double[] vals = new double[members.numAttributes()];
